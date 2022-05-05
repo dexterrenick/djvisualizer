@@ -14,7 +14,7 @@ let img;
 // Spectrum of mic sound frequencies
 var spectrum;
 
-
+var baseSenisitivity = 160;
 
 
 // Number lines
@@ -41,12 +41,12 @@ function draw() {
 
 
   spectrum = fft.analyze();
-  console.log(spectrum);
   let baseFrequency = fft.linAverages(5)[2];
-  if (baseFrequency > 120) {
+  console.log(baseFrequency);
+  if (baseFrequency > baseSenisitivity) {
     up = true;
   }
-  if (up && baseFrequency < 120) {
+  if (up && baseFrequency < baseSenisitivity) {
     if (increaseLines) {
       numLines++;
     } else {
