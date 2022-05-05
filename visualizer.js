@@ -1,6 +1,5 @@
-var song;
+var mic;
 var fft;
-var button;
 
 //current size - continuously updated
 let xSize = 400;
@@ -15,6 +14,14 @@ let img;
 // Spectrum of mic sound frequencies
 var spectrum;
 
+
+
+
+// Number lines
+let numLines = 1;
+let up = true;
+let increaseLines = true;
+
 function preload() {
   img = loadImage('./logo.png');
   img.resize(50, 50);
@@ -25,30 +32,50 @@ function setup(){
   createCanvas(getWidth(), getHeight());
   mic = new p5.AudioIn();
   mic.start();
-  fft = new p5.FFT(0.9, 16);
+  fft = new p5.FFT(0, 16);
   fft.setInput(mic);
 }
 
-function getFreqSpectrum() {
-  spectrum = fft.analyze();
-  console.log(spectrum);
-}
 
 function draw() {  
-  getFreqSpectrum();
+
+
+  spectrum = fft.analyze();
+  console.log(spectrum);
+  let baseFrequency = fft.linAverages(5)[2];
+  if (baseFrequency > 120) {
+    up = true;
+  }
+  if (up && baseFrequency < 120) {
+    if (increaseLines) {
+      numLines++;
+    } else {
+      numLines--;
+    }
+    up = false;
+    if (numLines > 6) {
+      increaseLines = false;
+    }
+    if (numLines < 2) {
+      increaseLines = true;
+    }
+  }
+
   background("#39FF14"); 
   image(img, getWidth()/2 - 275, getHeight()/2 - 275, 550, 550);
   xSize = map(sin(frameCount * sizeSpeed),-1.0,1.0,minXSize,maxXSize);
-  push();
-  // rotate(angle);
-  // ellipseMode(CENTER);
-  fill('rgba(0,0,0, 0)');
-  strokeWeight(7);
-  stroke(0); 
-  translate(getWidth()/2, getHeight()/2);
-  rotate(-.23);
-  ellipse(0, 0, xSize, 240);
-  pop();
+  let currentPercent = 1;
+  for (let i = 3; i < 2+numLines; i++) {
+    push();
+    fill('rgba(0,0,0, 0)');
+    strokeWeight(7);
+    stroke(0); 
+    translate(getWidth()/2, getHeight()/2);
+    rotate(-.23);
+    ellipse(0, 0, xSize*currentPercent, 240*currentPercent);
+    currentPercent += ((i*1.0)/4)
+    pop();
+  } 
 }
 
 // function setup() {
