@@ -1,6 +1,17 @@
 var mic;
 var fft;
+let shuffleCount = 1;
+let currentSlide = 0;
+// 3500 = about a minute
+shuffleRate = 3500 * 8;
 
+// Represents which visualizer should currently be displayed
+document.cookie="currentVis=0";
+let numVisualizers = 2;
+// Spectrum of mic sound frequencies
+var spectrum;
+
+// For circle visualizer
 //current size - continuously updated
 let xSize = 400;
 //minimum size
@@ -11,9 +22,7 @@ let maxXSize = 500;
 let sizeSpeed = 0.025;
 // Logo image
 let img;
-// Spectrum of mic sound frequencies
-var spectrum;
-
+// Sensitivity for circles added
 var baseSenisitivity = 160;
 
 
@@ -22,9 +31,59 @@ let numLines = 1;
 let up = true;
 let increaseLines = true;
 
+
+
+// For DVD visualizer
+let dvdLogo;
+let x = 320;
+let y = 180;
+let xspeed = 5;
+let yspeed = 4;
+
+let dvdX = 500;
+let dvdY = 500;
+
+let dvdLogo0;
+let dvdLogo1;
+let dvdLogo2;
+let dvdLogo3;
+let dvdLogo4;
+let dvdLogo5;
+let dvdLogo6;
+let dvdLogo7;
+let dvdLogo8;
+let dvdLogo9;
+let dvdLogo10;
+let dvdLogo11;
+let dvdLogo12;
+let dvdLogo13;
+let dvdLogo14;
+let dvdLogo15;
+let dvdLogos;
+
+
+
 function preload() {
-  img = loadImage('./logo.png');
+  img = loadImage('./assets/logo.png');
   img.resize(50, 50);
+  dvdLogo = loadImage('./assets/dvdLogos/DVD logo-01.png');
+  dvdLogo0 = loadImage('./assets/dvdLogos/DVD logo-01.png');
+  dvdLogo1 = loadImage('./assets/dvdLogos/DVD logo-02.png');
+  dvdLogo2 = loadImage('./assets/dvdLogos/DVD logo-03.png');
+  dvdLogo3 = loadImage('./assets/dvdLogos/DVD logo-04.png');
+  dvdLogo4 = loadImage('./assets/dvdLogos/DVD logo-05.png');
+  dvdLogo5 = loadImage('./assets/dvdLogos/DVD logo-06.png');
+  dvdLogo6 = loadImage('./assets/dvdLogos/DVD logo-07.png');
+  dvdLogo7 = loadImage('./assets/dvdLogos/DVD logo-08.png');
+  dvdLogo8 = loadImage('./assets/dvdLogos/DVD logo-09.png');
+  dvdLogo9 = loadImage('./assets/dvdLogos/DVD logo-10.png');
+  dvdLogo10 = loadImage('./assets/dvdLogos/DVD logo-11.png');
+  dvdLogo11 = loadImage('./assets/dvdLogos/DVD logo-12.png');
+  dvdLogo12 = loadImage('./assets/dvdLogos/DVD logo-13.png');
+  dvdLogo13 = loadImage('./assets/dvdLogos/DVD logo-14.png');
+  dvdLogo14 = loadImage('./assets/dvdLogos/DVD logo-15.png');
+  dvdLogo15 = loadImage('./assets/dvdLogos/DVD logo-16.png');
+  dvdLogos = [dvdLogo0, dvdLogo1, dvdLogo2, dvdLogo3, dvdLogo4, dvdLogo5, dvdLogo6, dvdLogo7, dvdLogo8, dvdLogo9, dvdLogo10, dvdLogo11, dvdLogo12, dvdLogo13, dvdLogo14, dvdLogo15]
 }
 
 
@@ -37,12 +96,34 @@ function setup(){
 }
 
 
-function draw() {  
+function draw() {
+  switch(parseInt(getCookie("currentVis"))) {
+    case 0:
+      draw0();
+      break;
+    case 1:
+      draw1();
+      break;
+    case 2:
+      shuffleCount++;
+      shuffleVisualizers();
+      break;
+    default:
+      draw1();
+      // console.log("Unkown Selected");
+   }
+}
 
 
+/*
+
+VISUALIZER FOR OSCILATING CIRCLES
+
+*/
+
+function draw0() {
   spectrum = fft.analyze();
   let baseFrequency = fft.linAverages(5)[2];
-  console.log(baseFrequency);
   if (baseFrequency > baseSenisitivity) {
     up = true;
   }
@@ -75,53 +156,32 @@ function draw() {
     ellipse(0, 0, xSize*currentPercent, 240*currentPercent);
     currentPercent += ((i*1.0)/4)
     pop();
-  } 
+  }
 }
 
-// function setup() {
-//   createCanvas(getWidth(), getHeight());
-//   colorMode(HSB);
-//   angleMode(DEGREES);
-//   mic = new p5.AudioIn();
-//   mic.start();
-//   fft = new p5.FFT(0.9, 32);
-//   fft.setInput(mic);
-// }
+/*
+
+VISUALIZER FOR DVD Logo
+
+*/
+
+function draw1() {
+  background("#242424");
+  image(dvdLogo, x, y, dvdX, dvdY);
+  x += xspeed;
+  y += yspeed;
+  let t = false;
+  if (x > width - dvdX + 80 || x < -90) {
+    dvdLogo = dvdLogos[Math.floor(random(16))];
+    xspeed = -xspeed;
+  }
+  if (y > height - dvdY + 180 || y < 0 - 195) {
+    dvdLogo = dvdLogos[Math.floor(random(16))];
+    yspeed = -yspeed;
+  }
+}
 
 
-// function draw() {
-
-//   let size = 10;
-//   //minimum size
-//   let minSize = 10;
-//   //maximum size
-//   let maxSize = 240;
-//   let sizeSpeed = 0.025;
-//   background(240);
-//   push();
-//   size = map(sin(frameCount * sizeSpeed),-1.0,1.0,minSize,maxSize);
-//   strokeWeight(10);
-//   stroke(255, 204, 100);
-//   ellipse(getWidth()/2, getHeight()/2, size, size);
-//   pop();
-// }
-
-// function draw() {  
-//   background(0);
-//   var spectrum = fft.analyze();
-//   noStroke();
-//   translate(width / 2, height / 2);
-//   for (var i = 0; i < spectrum.length; i++) {
-//     var angle = map(i, 0, spectrum.length, 0, 360);
-//     var amp = spectrum[i];
-//     var r = map(amp + 80, 0, 256, 20, getHeight()/2);
-//     var x = r * cos(angle);
-//     var y = r * sin(angle);
-//     stroke(i*10, 255, 255);
-//     line(0, 0, x, y);
-
-//   }
-// }
 
 function getWidth() {
   return Math.max(
@@ -141,4 +201,54 @@ function getHeight() {
     document.documentElement.offsetHeight,
     document.documentElement.clientHeight
   );
+}
+
+function adjustCurrentVisualizer(i) {
+  document.cookie = ("currentVis=" + i);
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+// Changes which visualizer is selected, deselects currently selected
+function selectItem(selected) {
+  adjustCurrentVisualizer(selected);
+  let vizs = document.querySelectorAll(".visualizer-item")
+  for (viz in vizs) {
+    vizs[viz].classList.remove("selected-visualizer");
+    if (viz == selected) {
+      vizs[viz].classList.add("selected-visualizer");
+    }
+  }
+}
+
+function shuffleVisualizers() {
+  if (shuffleCount % shuffleRate == 0) {
+    currentSlide++;
+  }
+  console.log(currentSlide);
+  // console.log(currentSlide%numVisualizers);
+  switch(currentSlide%numVisualizers){
+    case 0:
+      draw0();
+      break;
+    case 1:
+      draw1();
+      break;
+    default:
+      break;
+  }
 }

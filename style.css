@@ -1,0 +1,40 @@
+body {
+    border: 0px;
+    margin: 0px;
+    background-color: black;
+}
+
+.titling {
+    text-align: center;
+    font-size: 100px;
+    color: white;
+}
+
+.visualizers-container {
+    padding: 50px;
+    width: calc(100vw - 200px);;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+} 
+
+.visualizer-item {
+    padding: 50px;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+}
+
+.selected-visualizer {
+    border: 2px solid black;
+    outline: #4CAF50 solid 10px;
+    margin: auto;  
+    padding: 20px;
+    text-align: center;
+}
+
+.thumnail-img {
+    max-width: 370px;  
+    height: auto;  
+}
+
