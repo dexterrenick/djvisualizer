@@ -110,7 +110,6 @@ function draw() {
       break;
     default:
       draw1();
-      // console.log("Unkown Selected");
    }
 }
 
@@ -239,8 +238,6 @@ function shuffleVisualizers() {
   if (shuffleCount % shuffleRate == 0) {
     currentSlide++;
   }
-  console.log(currentSlide);
-  // console.log(currentSlide%numVisualizers);
   switch(currentSlide%numVisualizers){
     case 0:
       draw0();
