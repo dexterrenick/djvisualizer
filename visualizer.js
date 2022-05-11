@@ -1,5 +1,6 @@
 var mic;
 var fft;
+var peakDetect;
 let shuffleCount = 1;
 let currentSlide = 0;
 // 3500 = about a minute
@@ -32,6 +33,10 @@ let up = true;
 let increaseLines = true;
 
 
+// for amplitude visualizer
+var amplitude;
+var mapMax = 1.0;
+
 
 // For DVD visualizer
 let dvdLogo;
@@ -61,6 +66,10 @@ let dvdLogo14;
 let dvdLogo15;
 let dvdLogos;
 
+// for spinning cubes visualizer
+let sizeOfCube = 3000;
+let hue = 0;
+
 
 
 function preload() {
@@ -88,11 +97,16 @@ function preload() {
 
 
 function setup(){
+  colorMode(HSB,255);
+  // createCanvas(getWidth(), getHeight(), WEBGL);
   createCanvas(getWidth(), getHeight());
   mic = new p5.AudioIn();
   mic.start();
   fft = new p5.FFT(0, 16);
   fft.setInput(mic);
+  amplitude = new p5.Amplitude();
+  amplitude.setInput(mic);
+  peakDetect = new p5.PeakDetect();
 }
 
 
@@ -105,6 +119,9 @@ function draw() {
       draw1();
       break;
     case 2:
+      draw2();
+      break;
+    case 3:
       shuffleCount++;
       shuffleVisualizers();
       break;
@@ -121,25 +138,26 @@ VISUALIZER FOR OSCILATING CIRCLES
 */
 
 function draw0() {
-  spectrum = fft.analyze();
-  let baseFrequency = fft.linAverages(5)[2];
-  if (baseFrequency > baseSenisitivity) {
-    up = true;
-  }
-  if (up && baseFrequency < baseSenisitivity) {
+  fft.analyze();
+  peakDetect.update(fft);
+  if ( peakDetect.isDetected ) {
+    console.log("TEST");
     if (increaseLines) {
       numLines++;
     } else {
       numLines--;
     }
     up = false;
-    if (numLines > 6) {
+    if (numLines > 5) {
       increaseLines = false;
     }
     if (numLines < 2) {
       increaseLines = true;
     }
   }
+
+  
+
 
   background("#39FF14"); 
   image(img, getWidth()/2 - 275, getHeight()/2 - 275, 550, 550);
@@ -180,6 +198,31 @@ function draw1() {
   }
 }
 
+/*
+
+3d spinning cubes Visualizer
+
+*/
+
+function draw2() {
+  // background(250);
+  background(hue,255,255);
+  hue += 0.1;
+  if (hue > 255) hue = 0;
+  for (let i = -600; i < 1200; i+=600) {
+    push();
+    translate(i, 0, sizeOfCube);
+    if (sizeOfCube > 100) {
+        sizeOfCube -= 10;
+    }
+    rotateX(frameCount * 0.01);
+    rotateY(frameCount * 0.01);
+    rotateZ(frameCount * 0.01);
+    texture(img);
+    box(300, 300, 300);
+  pop();
+  }
+}
 
 
 function getWidth() {
