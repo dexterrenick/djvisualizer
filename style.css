@@ -1,3 +1,5 @@
+@font-face { font-family: "Planet-Kosmos"; src: url('./assets/PLANK___.TTF'); } 
+
 body {
     border: 0px;
     margin: 0px;
@@ -9,6 +11,7 @@ body {
     text-align: center;
     font-size: 100px;
     color: white;
+    font-family: "Planet-Kosmos";
 }
 
 .visualizers-container {
@@ -16,7 +19,7 @@ body {
     width: calc(100vw - 200px);;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;
 } 
 
 .visualizer-item {
@@ -29,7 +32,7 @@ body {
 .selected-visualizer {
     border: 2px solid black;
     outline: #4CAF50 solid 10px;
-    margin: auto;  
+    /* margin: auto;   */
     padding: 20px;
     text-align: center;
 }
@@ -38,4 +41,5 @@ body {
     max-width: 370px;  
     height: auto;  
 }
+
 

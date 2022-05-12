@@ -8,7 +8,7 @@ shuffleRate = 3500 * 8;
 
 // Represents which visualizer should currently be displayed
 document.cookie="currentVis=0";
-let numVisualizers = 2;
+let numVisualizers = 4;
 // Spectrum of mic sound frequencies
 var spectrum;
 
@@ -70,9 +70,18 @@ let dvdLogos;
 let sizeOfCube = 3000;
 let hue = 0;
 
+// For video one's
+let vid1;
+let vid2;
 
 
 function preload() {
+  vid1 = createVideo("./assets/hall.mp4");
+  vid2 = createVideo("./assets/square.mp4");
+  vid1.loop()
+  vid2.loop()
+  vid1.hide();
+  vid2.hide();
   img = loadImage('./assets/logo.png');
   img.resize(50, 50);
   dvdLogo = loadImage('./assets/dvdLogos/DVD logo-01.png');
@@ -98,6 +107,7 @@ function preload() {
 
 function setup(){
   colorMode(HSB,255);
+  imageMode(CORNER);
   // createCanvas(getWidth(), getHeight(), WEBGL);
   createCanvas(getWidth(), getHeight());
   mic = new p5.AudioIn();
@@ -122,6 +132,12 @@ function draw() {
       draw2();
       break;
     case 3:
+      draw3();
+      break;
+    case 4:
+      // draw4();
+      break;
+    case 5:
       shuffleCount++;
       shuffleVisualizers();
       break;
@@ -141,7 +157,6 @@ function draw0() {
   fft.analyze();
   peakDetect.update(fft);
   if ( peakDetect.isDetected ) {
-    console.log("TEST");
     if (increaseLines) {
       numLines++;
     } else {
@@ -157,8 +172,6 @@ function draw0() {
   }
 
   
-
-
   background("#39FF14"); 
   image(img, getWidth()/2 - 275, getHeight()/2 - 275, 550, 550);
   xSize = map(sin(frameCount * sizeSpeed),-1.0,1.0,minXSize,maxXSize);
@@ -200,11 +213,33 @@ function draw1() {
 
 /*
 
-3d spinning cubes Visualizer
+Moving down hallway video visualizer
 
 */
 
 function draw2() {
+  let v1 = vid1.get();
+  image(v1, 0, 0, width, v1.height*width/v1.width);
+}
+
+/*
+
+3d spinning cubes Visualizer
+
+*/
+
+function draw3() {
+  let v2 = vid2.get();
+  image(v2, 0, 0, width, v2.height*width/v2.width);
+}
+
+/*
+
+3d spinning cubes Visualizer
+
+*/
+
+function draw4() {
   // background(250);
   background(hue,255,255);
   hue += 0.1;
@@ -287,6 +322,12 @@ function shuffleVisualizers() {
       break;
     case 1:
       draw1();
+      break;
+    case 2:
+      draw2();
+      break;
+    case 3:
+      draw3();
       break;
     default:
       break;
